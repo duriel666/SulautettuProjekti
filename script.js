@@ -1,39 +1,35 @@
-// <button id="connect-button" type="button" disabled>🔌 Connect</button>
-// <script src="script.js"> // muista index.html
 const connectButton = document.getElementById('connect-button');
 let port;
 
 if ('serial' in navigator) {
     connectButton.addEventListener('click', async function () {
-        console.log(unityInstance);
-        /*if (port) {
-            port.close();
-            port = undefined;
-
-            connectButton.innerText = '🔌 Connect';
-            document.querySelector('figure').classList.replace('bounceIn', 'fadeOut');
-        }*/
-        //else {
-            const reader=await getReader();
-            //console.log(reader);
-            try {
-                while (true) {
-                  const { value, done } = await reader.read();
-                  if (done) {
-                    // |reader| has been canceled.
+        //console.log(unityInstance);
+        const reader = await getReader();
+        let string = "";
+        const decoder = new TextDecoder("utf-8");
+        try {
+            while (true) {
+                const { value, done } = await reader.read();
+                const decodedValue = decoder.decode(value);
+                console.log(value);
+                if (done) {
                     break;
-                  }
-                  // Do something with |value|...
-                  unityInstance.SendMessage('Car1','SetValue', value.join(","));
-                  setTimeout(()=>{console.log(value)},500);
                 }
-              } catch (error) {
-                // Handle |error|...
-              } finally {
-                reader.releaseLock();
-              }
+                if (decodedValue.includes("a")) {
+                    string += decodedValue.replace("a", "");
+                    console.log(decodedValue);
+                }
+                else {
+                    unityInstance.SendMessage('Car1', 'SetValue', string);
+                    console.log(string);
+                    string = "";
+                }
+            }
+        } catch (error) {
+        } finally {
+            reader.releaseLock();
+        }
     });
-
     connectButton.disabled = false;
 }
 else {
