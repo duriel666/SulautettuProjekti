@@ -1,3 +1,3 @@
 # SulautettuProjekti
 
-Sulautetun järjestelmä sovellusprojekti 2021
+Sulautetun järjestelmän sovellusprojekti 2021
